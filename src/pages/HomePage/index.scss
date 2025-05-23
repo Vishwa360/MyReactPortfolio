@@ -1,0 +1,8 @@
+@use "@carbon/type";
+
+.helper-text {
+  @include type.type-style("helper-text-01");
+}
+.extra-space {
+  margin-bottom: 20px;
+}

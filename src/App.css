@@ -28,6 +28,19 @@
   color: #61dafb;
 }
 
+.app-container {
+  display: flex;
+  height: 100vh; /* Full height for the app */
+  overflow: hidden; /* Prevent overflow issues */
+}
+
+.content-container {
+  flex: 1; /* Take up the remaining space next to the navigation */
+  padding: 20px; /* Add padding for content */
+  overflow-y: auto; /* Enable vertical scrolling for content */
+  height: 100vh; /* Ensure the content container takes full height */
+  box-sizing: border-box; /* Include padding in height calculation */
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -35,4 +48,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+* {
+  font-family: Arial, sans-serif !important; /* ❌ this breaks Carbon */
 }

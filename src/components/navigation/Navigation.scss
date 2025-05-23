@@ -1,0 +1,21 @@
+.custom-header {
+    background-color: black;
+    color: white;
+  
+    .bx--header__name {
+      color: white; // Ensure the HeaderName text is visible
+    }
+  
+    .bx--header__menu-item {
+      color: white; // Ensure the menu items are visible
+    }
+  
+    .bx--header__menu-item:hover {
+      color: #f4f4f4; // Add a hover effect for better UX
+    }
+  }
+.active-link {
+  color: #0072c3; /* Highlight active link */
+  font-weight: bold;
+  text-decoration: underline;
+}
