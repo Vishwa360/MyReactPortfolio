@@ -49,13 +49,13 @@ const tabs = [
         <p>Email: vishwajith@example.com</p>
         <p>
           LinkedIn:{" "}
-          <a href="https://linkedin.com/in/vishwajith" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.linkedin.com/in/vishwajith-cr/" target="_blank" rel="noopener noreferrer">
             linkedin.com/in/vishwajith
           </a>
         </p>
         <p>
           GitHub:{" "}
-          <a href="https://github.com/vishwajith" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/Vishwa360" target="_blank" rel="noopener noreferrer">
             github.com/vishwajith
           </a>
         </p>
@@ -79,6 +79,19 @@ export default function Homepage() {
         <Heading style={{ textAlign: "center", fontSize: "3.5rem", fontWeight: "bold", marginBottom: "20px" }}>
           Welcome to My Portfolio
         </Heading>
+        <div style={{ textAlign: "center", marginBottom: "20px" }}>
+          <img
+            src="/assets/profile_3.jpg" // Place the image in the public/assets folder
+            alt="Vishwajith"
+            style={{
+              borderRadius: "50%",
+              width: "150px",
+              height: "150px",
+              objectFit: "cover",
+              marginBottom: "20px",
+            }}
+          />
+        </div>
         <p style={{ marginBottom: "20px", marginTop: "20px" }}>
           I am Vishwajith, an AI Engineer with a passion for building intelligent systems that solve real-world
           problems. My expertise lies in developing data science projects, deploying machine learning models, and
