@@ -1,11 +1,40 @@
 import React, { useEffect } from "react";
 import { Content, Header, HeaderName, GlobalTheme } from "@carbon/react";
+import { ChatContainer, MessageResponseTypes } from "@carbon/ai-chat";
 import "./App.scss";
 import Homepage from "./pages/HomePage/Homepage";
 import ProjectPage from "./pages/ProjectPage/ProjectPage";
 import UploadsPage from "./pages/UploadsPage/UploadsPage";
 import Navigation from "./components/navigation/Navigation";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+
+const WELCOME_TEXT =
+  "Hello. This is the Carbon AI Chat basic integration. Connect customSendMessage to your backend for real responses.";
+
+const chatConfig = {
+  launcher: {
+    isOn: true,
+  },
+  messaging: {
+    customSendMessage: async (request, _requestOptions, instance) => {
+      const inputText = request?.input?.text?.trim();
+      const responseText = inputText
+        ? `You said: "${inputText}". Replace this mock with your real assistant API response.`
+        : WELCOME_TEXT;
+
+      await instance.messaging.addMessage({
+        output: {
+          generic: [
+            {
+              response_type: MessageResponseTypes.TEXT,
+              text: responseText,
+            },
+          ],
+        },
+      });
+    },
+  },
+};
 
 function App() {
   const theme = "g100"; // ← your implementation, e.g. fetching user settings
@@ -31,6 +60,7 @@ function App() {
             <Route path="/project" element={<ProjectPage />} />
           </Routes>
         </Content>
+        <ChatContainer {...chatConfig} />
       </BrowserRouter>
     </GlobalTheme>
   );
