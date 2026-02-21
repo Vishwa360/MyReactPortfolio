@@ -28,6 +28,9 @@ function Navigation() {
           <HeaderMenuItem href="/project">
             <strong>Projects</strong>
           </HeaderMenuItem>
+          <HeaderMenuItem href="/work-experience">
+            <strong>Work Experience</strong>
+          </HeaderMenuItem>
           <HeaderMenuItem href="/upload">
             <strong>Upload</strong>
           </HeaderMenuItem>

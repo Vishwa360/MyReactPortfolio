@@ -5,6 +5,7 @@ import "./App.scss";
 import Homepage from "./pages/HomePage/Homepage";
 import ProjectPage from "./pages/ProjectPage/ProjectPage";
 import UploadsPage from "./pages/UploadsPage/UploadsPage";
+import WorkExperiencePage from "./pages/WorkExperiencePage/WorkExperiencePage";
 import Navigation from "./components/navigation/Navigation";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
@@ -58,6 +59,7 @@ function App() {
             <Route path="/homepage" element={<Homepage />} />
             <Route path="/upload" element={<UploadsPage />} />
             <Route path="/project" element={<ProjectPage />} />
+            <Route path="/work-experience" element={<WorkExperiencePage />} />
           </Routes>
         </Content>
         <ChatContainer {...chatConfig} />

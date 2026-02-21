@@ -6,3 +6,91 @@
 .extra-space {
   margin-bottom: 20px;
 }
+
+.homepage {
+  padding: 1.5rem 0 2rem;
+}
+
+.homepage__title {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.homepage__photo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.homepage__photo {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.homepage__intro {
+  margin: 1rem auto 1.5rem;
+  max-width: 70ch;
+  line-height: 1.6;
+}
+
+.homepage__tabs {
+  margin-top: 1.5rem;
+}
+
+.homepage__panel {
+  margin-top: 0;
+  padding: 0;
+  background: var(--cds-layer);
+  border: 1px solid var(--cds-border-subtle-01);
+}
+
+.homepage__skills {
+  margin: 0;
+  padding: 1rem 1.5rem;
+}
+
+.homepage__skill-item {
+  margin: 0;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--cds-border-subtle-01);
+}
+
+.homepage__skill-item:last-child {
+  border-bottom: 0;
+}
+
+.homepage__skill-area {
+  @include type.type-style("heading-compact-01");
+  margin: 0 0 0.25rem;
+}
+
+.homepage__skill-details {
+  @include type.type-style("body-compact-01");
+  margin: 0;
+  color: var(--cds-text-secondary);
+}
+
+.homepage__tabs .cds--tabs__nav-link {
+  @include type.type-style("heading-compact-01");
+}
+
+.homepage__tabs .cds--tabs__nav-item--selected .cds--tabs__nav-link {
+  color: var(--cds-text-primary);
+}
+
+.homepage__profile-text {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.homepage__profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.homepage__contact-line {
+  margin: 0 0 0.75rem;
+}
