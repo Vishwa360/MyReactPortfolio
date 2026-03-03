@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
-import { Content, Header, HeaderName, GlobalTheme } from "@carbon/react";
+import { Content, GlobalTheme } from "@carbon/react";
 import { ChatContainer, MessageResponseTypes } from "@carbon/ai-chat";
 import "./App.scss";
 import Homepage from "./pages/HomePage/Homepage";
-import ProjectPage from "./pages/ProjectPage/ProjectPage";
-import UploadsPage from "./pages/UploadsPage/UploadsPage";
 import WorkExperiencePage from "./pages/WorkExperiencePage/WorkExperiencePage";
 import Navigation from "./components/navigation/Navigation";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
@@ -180,7 +178,7 @@ const chatConfig = {
 };
 
 function App() {
-  const theme = "g100"; // ← your implementation, e.g. fetching user settings
+  const theme = "g10";
 
   useEffect(() => {
     document.documentElement.dataset.carbonTheme = theme;
@@ -189,21 +187,19 @@ function App() {
   return (
     <GlobalTheme theme={theme}>
       <BrowserRouter>
-        <Content>
-          <Header aria-label="Header for Our Skeleton App">
-            <HeaderName href="https://react.carbondesignsystem.com/" prefix="Carbon Design System">
-              Header for Our Skeleton App
-            </HeaderName>
-          </Header>
+        <div className="app-shell">
           <Navigation />
-          <Routes>
-            <Route exact path="/" element={<Navigate to="/homepage" />} />
-            <Route path="/homepage" element={<Homepage />} />
-            <Route path="/upload" element={<UploadsPage />} />
-            <Route path="/project" element={<ProjectPage />} />
-            <Route path="/work-experience" element={<WorkExperiencePage />} />
-          </Routes>
-        </Content>
+          <Content className="app-content">
+            <Routes>
+              <Route path="/" element={<Navigate to="/homepage" replace />} />
+              <Route path="/homepage" element={<Homepage />} />
+              <Route path="/work-experience" element={<WorkExperiencePage />} />
+              <Route path="/upload" element={<Navigate to="/homepage" replace />} />
+              <Route path="/project" element={<Navigate to="/homepage" replace />} />
+              <Route path="*" element={<Navigate to="/homepage" replace />} />
+            </Routes>
+          </Content>
+        </div>
         <ChatContainer {...chatConfig} />
       </BrowserRouter>
     </GlobalTheme>

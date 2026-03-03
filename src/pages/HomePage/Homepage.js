@@ -1,10 +1,11 @@
 // src/pages/HomePage/Homepage.js
 
 import React from "react";
+import { NavLink } from "react-router-dom";
 import {
-  Header,
-  HeaderName,
-  Content,
+  Button,
+  Column,
+  Grid,
   Heading,
   Link,
   Tab,
@@ -15,81 +16,129 @@ import {
   Tag,
   Tile,
 } from "@carbon/react";
+import { ArrowRight, LogoGithub, LogoLinkedin } from "@carbon/icons-react";
 import "./index.scss";
-import Navigation from "../../components/navigation/Navigation";
-
-const skills = [
-  {
-    area: "Machine Learning",
-    details: "Supervised, Unsupervised, and Reinforcement Learning",
-  },
-  {
-    area: "Deep Learning",
-    details: "CNNs, RNNs, Transformers",
-  },
-  {
-    area: "Model Deployment",
-    details: "Docker, FastAPI, Flask, Streamlit, Shiny",
-  },
-  {
-    area: "Production ML",
-    details: "MLOps, Model Monitoring, Retraining Pipelines",
-  },
-  {
-    area: "Data Engineering",
-    details: "ETL, Apache Airflow, Spark, Pandas",
-  },
-  {
-    area: "Natural Language Processing",
-    details: "spaCy, Hugging Face Transformers",
-  },
-  {
-    area: "Computer Vision",
-    details: "OpenCV, PyTorch, TensorFlow",
-  },
-  {
-    area: "Prompt Engineering & LLM Integration",
-    details: "OpenAI, LangChain, RAG",
-  },
-];
+import SectionIntro from "../../components/shared/SectionIntro";
+import { profile } from "../../content/profile";
 
 export default function Homepage() {
   return (
-    <>
-      <Header aria-label="Header for Our Skeleton App">
-        <HeaderName href="https://react.carbondesignsystem.com/" prefix="Carbon Design System">
-          Welcome to Vishwajith's Portfolio
-        </HeaderName>
-      </Header>
+    <div className="homepage">
+      <Grid fullWidth className="homepage__hero-grid">
+        <Column sm={4} md={8} lg={8} className="homepage__hero-copy">
+          <SectionIntro
+            eyebrow={profile.title}
+            title={profile.heroTitle}
+            body={profile.summary}
+          />
 
-      <Navigation />
-
-      <Content>
-        <section className="homepage">
-          <Heading className="homepage__title">Welcome to My Portfolio</Heading>
-          <div className="homepage__photo-wrap">
-            <img src="/assets/profile_3.jpg" alt="Vishwajith" className="homepage__photo" />
+          <div className="homepage__hero-actions">
+            <Button as={NavLink} to="/work-experience" renderIcon={ArrowRight}>
+              Explore Experience
+            </Button>
+            <Button kind="tertiary" href={profile.linkedin} target="_blank" rel="noopener noreferrer" renderIcon={LogoLinkedin}>
+              LinkedIn
+            </Button>
+            <Button kind="ghost" href={profile.github} target="_blank" rel="noopener noreferrer" renderIcon={LogoGithub}>
+              GitHub
+            </Button>
           </div>
-          <p className="homepage__intro">
-            I am Vishwajith, an AI Engineer with a passion for building intelligent systems that solve real-world
-            problems. My expertise lies in developing data science projects, deploying machine learning models, and
-            monitoring their performance in production environments.
-          </p>
 
+          <div className="homepage__meta">
+            <span>{profile.location}</span>
+            <span>{profile.email}</span>
+            <span>Available for enterprise AI and platform-focused roles</span>
+          </div>
+        </Column>
+
+        <Column sm={4} md={8} lg={8} className="homepage__hero-side">
+          <Tile className="homepage__identity-card">
+            <div className="homepage__identity-top">
+              <div>
+                <p className="homepage__identity-label">Profile</p>
+                <Heading className="homepage__identity-name">{profile.shortName}</Heading>
+                <p className="homepage__identity-role">{profile.title}</p>
+              </div>
+              <Tag type="blue">Open to AI leadership-track impact</Tag>
+            </div>
+            <img src="/assets/profile_3.jpg" alt="Vishwajith" className="homepage__photo" />
+            <p className="homepage__identity-summary">{profile.shortBio}</p>
+            <div className="homepage__identity-tags">
+              {profile.capabilities.slice(0, 6).map((item) => (
+                <Tag key={item} type="gray">
+                  {item}
+                </Tag>
+              ))}
+            </div>
+          </Tile>
+        </Column>
+      </Grid>
+
+      <Grid fullWidth className="homepage__stats-grid">
+        {profile.stats.map((stat) => (
+          <Column sm={2} md={4} lg={4} key={stat.label}>
+            <Tile className="homepage__stat-card">
+              <p className="homepage__stat-value">{stat.value}</p>
+              <p className="homepage__stat-label">{stat.label}</p>
+            </Tile>
+          </Column>
+        ))}
+      </Grid>
+
+      <Grid fullWidth className="homepage__section">
+        <Column sm={4} md={8} lg={5}>
+          <SectionIntro
+            eyebrow="Focus Areas"
+            title="Carbon-structured, product-minded engineering."
+            body="The portfolio now emphasizes the work you actually want to be hired for: practical GenAI systems, measurable delivery, and enterprise-grade implementation discipline."
+          />
+        </Column>
+        <Column sm={4} md={8} lg={11}>
+          <div className="homepage__focus-grid">
+            {profile.focusAreas.map((area) => (
+              <Tile key={area.title} className="homepage__focus-card">
+                <h3>{area.title}</h3>
+                <p>{area.description}</p>
+              </Tile>
+            ))}
+          </div>
+        </Column>
+      </Grid>
+
+      <Grid fullWidth className="homepage__section">
+        <Column sm={4} md={8} lg={16}>
           <Tabs className="homepage__tabs">
-            <TabList aria-label="Homepage sections">
-              <Tab>Key Skills</Tab>
-              <Tab>Profile</Tab>
+            <TabList aria-label="Portfolio details">
+              <Tab>Capabilities</Tab>
+              <Tab>Education</Tab>
               <Tab>Contact</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
                 <Tile className="homepage__panel">
                   <div className="homepage__skills">
-                    {skills.map((skill) => (
-                      <article key={skill.area} className="homepage__skill-item">
-                        <h3 className="homepage__skill-area">{skill.area}</h3>
-                        <p className="homepage__skill-details">{skill.details}</p>
+                    {profile.capabilities.map((skill) => (
+                      <Tag key={skill} type="cool-gray">
+                        {skill}
+                      </Tag>
+                    ))}
+                  </div>
+                </Tile>
+              </TabPanel>
+
+              <TabPanel>
+                <Tile className="homepage__panel">
+                  <div className="homepage__education-list">
+                    {profile.education.map((item) => (
+                      <article key={`${item.school}-${item.year}`} className="homepage__education-item">
+                        <div>
+                          <h3>{item.school}</h3>
+                          <p>{item.degree}</p>
+                        </div>
+                        <div className="homepage__education-meta">
+                          <span>{item.year}</span>
+                          <Tag type="blue">{item.format}</Tag>
+                        </div>
                       </article>
                     ))}
                   </div>
@@ -98,50 +147,33 @@ export default function Homepage() {
 
               <TabPanel>
                 <Tile className="homepage__panel">
-                  <p className="homepage__profile-text">
-                    AI Engineer with hands-on experience delivering Generative AI, RAG, governance, and ML solutions
-                    across telecom, finance, and enterprise domains.
-                  </p>
-                  <div className="homepage__profile-tags">
-                    <Tag type="purple">Generative AI</Tag>
-                    <Tag type="teal">RAG</Tag>
-                    <Tag type="cyan">MLOps</Tag>
-                    <Tag type="green">Data Science</Tag>
+                  <div className="homepage__contact-list">
+                    <p>
+                      Email:{" "}
+                      <Link href={`mailto:${profile.email}`} inline>
+                        {profile.email}
+                      </Link>
+                    </p>
+                    <p>
+                      LinkedIn:{" "}
+                      <Link href={profile.linkedin} target="_blank" rel="noopener noreferrer" inline>
+                        linkedin.com/in/vishwajith-cr
+                      </Link>
+                    </p>
+                    <p>
+                      GitHub:{" "}
+                      <Link href={profile.github} target="_blank" rel="noopener noreferrer" inline>
+                        github.com/Vishwa360
+                      </Link>
+                    </p>
+                    <p>Languages: {profile.languages.join(", ")}</p>
                   </div>
-                </Tile>
-              </TabPanel>
-
-              <TabPanel>
-                <Tile className="homepage__panel">
-                  <p className="homepage__contact-line">
-                    Email:{" "}
-                    <Link href="mailto:vishwa.jith360@gmail.com" inline>
-                      vishwa.jith360@gmail.com
-                    </Link>
-                  </p>
-                  <p className="homepage__contact-line">
-                    LinkedIn:{" "}
-                    <Link
-                      href="https://www.linkedin.com/in/vishwajith-cr/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      inline
-                    >
-                      linkedin.com/in/vishwajith-cr
-                    </Link>
-                  </p>
-                  <p className="homepage__contact-line">
-                    GitHub:{" "}
-                    <Link href="https://github.com/Vishwa360" target="_blank" rel="noopener noreferrer" inline>
-                      github.com/Vishwa360
-                    </Link>
-                  </p>
                 </Tile>
               </TabPanel>
             </TabPanels>
           </Tabs>
-        </section>
-      </Content>
-    </>
+        </Column>
+      </Grid>
+    </div>
   );
 }

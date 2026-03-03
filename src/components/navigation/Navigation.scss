@@ -1,21 +1,88 @@
 .custom-header {
-    background-color: black;
-    color: white;
-  
-    .bx--header__name {
-      color: white; // Ensure the HeaderName text is visible
-    }
-  
-    .bx--header__menu-item {
-      color: white; // Ensure the menu items are visible
-    }
-  
-    .bx--header__menu-item:hover {
-      color: #f4f4f4; // Add a hover effect for better UX
-    }
+  background: rgba(15, 15, 15, 0.92);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.custom-header__brand-mark {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-left: 1rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  flex: 0 0 auto;
+}
+
+.custom-header__brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.custom-header__name {
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.custom-header__name:hover {
+  color: #ffffff;
+}
+
+.custom-header__nav {
+  margin-left: 2rem;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.custom-header__nav-link {
+  min-height: 3rem;
+  padding: 0 1rem;
+  display: inline-flex;
+  align-items: center;
+  color: rgba(244, 244, 244, 0.72);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.custom-header__nav-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.custom-header__nav-link--active {
+  color: #ffffff;
+  border-bottom-color: #0f62fe;
+}
+
+.custom-header__actions .cds--header__action {
+  color: rgba(244, 244, 244, 0.88);
+}
+
+.custom-header__actions .cds--header__action:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+@media (max-width: 672px) {
+  .custom-header__brand-mark {
+    display: none;
   }
-.active-link {
-  color: #0072c3; /* Highlight active link */
-  font-weight: bold;
-  text-decoration: underline;
+
+  .custom-header__nav {
+    margin-left: 0.5rem;
+  }
+
+  .custom-header__nav-link {
+    padding: 0 0.65rem;
+    font-size: 0.875rem;
+  }
 }

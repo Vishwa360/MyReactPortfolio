@@ -1,8 +1,7 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { profile, workExperience } from "./content/profile";
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test("profile content includes key portfolio sections", () => {
+  expect(profile.shortName).toMatch(/vishwajith/i);
+  expect(profile.education.length).toBeGreaterThan(0);
+  expect(workExperience.length).toBeGreaterThan(0);
 });
