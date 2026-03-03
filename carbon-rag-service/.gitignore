@@ -1,0 +1,8 @@
+.env
+.venv
+__pycache__/
+*.pyc
+data/resume/*
+!data/resume/.gitkeep
+storage/faiss/*
+!storage/faiss/.gitkeep

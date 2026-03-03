@@ -21,3 +21,11 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Python RAG service
+carbon-rag-service/.env
+carbon-rag-service/.venv
+carbon-rag-service/data/resume/*
+!carbon-rag-service/data/resume/.gitkeep
+carbon-rag-service/storage/faiss/*
+!carbon-rag-service/storage/faiss/.gitkeep
