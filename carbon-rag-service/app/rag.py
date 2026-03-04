@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 from typing import Iterable
 from uuid import uuid4
@@ -19,6 +20,8 @@ from .config import Settings
 from .index_store import build_index_store
 from .ingestion import SUPPORTED_EXTENSIONS, list_supported_files, split_documents
 from .models import ChatHistoryItem, ChatResponse
+
+logger = logging.getLogger(__name__)
 
 
 class ResumeRAGService:
@@ -40,6 +43,12 @@ class ResumeRAGService:
         )
         self.index_store = build_index_store(settings, self.embeddings)
         self.vector_store: FAISS | None = None
+        logger.info(
+            "ResumeRAGService initialized with index backend=%s bucket=%s prefix=%s",
+            settings.index_store_backend,
+            settings.gcs_bucket_name or "",
+            settings.gcs_index_prefix,
+        )
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 (
@@ -71,12 +80,24 @@ class ResumeRAGService:
         target_path = self.settings.upload_dir / (upload.filename or f"resume{extension}")
         contents = await upload.read()
         target_path.write_bytes(contents)
+        logger.info(
+            "Received upload '%s'; saved to %s using index backend=%s",
+            upload.filename or f"resume{extension}",
+            target_path,
+            self.settings.index_store_backend,
+        )
         chunk_count = self.ingest_file(target_path)
         return str(target_path), chunk_count
 
     def ingest_directory(self, directory_path: str | Path) -> tuple[str, int, int]:
         directory = Path(directory_path)
         source_files = list_supported_files(directory)
+        logger.info(
+            "Starting directory ingestion from %s with %s file(s) using backend=%s",
+            directory,
+            len(source_files),
+            self.settings.index_store_backend,
+        )
 
         all_chunks: list[Document] = []
         for source_file in source_files:
@@ -95,6 +116,12 @@ class ResumeRAGService:
 
         self.vector_store = FAISS.from_documents(all_chunks, self.embeddings)
         self.index_store.save(self.vector_store)
+        logger.info(
+            "Directory ingestion completed for %s: files_indexed=%s chunks_indexed=%s",
+            directory,
+            len(source_files),
+            len(all_chunks),
+        )
         return str(directory), len(source_files), len(all_chunks)
 
     def ingest_file(self, source_path: str | Path) -> int:
@@ -113,6 +140,12 @@ class ResumeRAGService:
 
         self.vector_store = FAISS.from_documents(chunks, self.embeddings)
         self.index_store.save(self.vector_store)
+        logger.info(
+            "File ingestion completed for %s: chunks_indexed=%s backend=%s",
+            source,
+            len(chunks),
+            self.settings.index_store_backend,
+        )
         return len(chunks)
 
     def rebuild_index_from_upload_dir(self) -> tuple[str, int, int]:

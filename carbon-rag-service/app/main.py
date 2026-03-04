@@ -40,6 +40,9 @@ def health() -> dict[str, object]:
         "status": "ok",
         "has_index": rag_service.has_index(),
         "environment": settings.app_env,
+        "index_store_backend": settings.index_store_backend,
+        "gcs_bucket": settings.gcs_bucket_name,
+        "gcs_index_prefix": settings.gcs_index_prefix,
     }
 
 

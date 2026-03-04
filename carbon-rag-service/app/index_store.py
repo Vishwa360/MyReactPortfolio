@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import tempfile
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -12,6 +13,7 @@ from .config import Settings
 
 
 INDEX_FILENAMES = ("index.faiss", "index.pkl")
+logger = logging.getLogger(__name__)
 
 
 class IndexStore(ABC):
@@ -37,6 +39,7 @@ class LocalIndexStore(IndexStore):
         return (self.settings.vector_store_dir / "index.faiss").exists()
 
     def load(self) -> FAISS:
+        logger.info("Loading FAISS index from local path: %s", self.settings.vector_store_dir)
         return FAISS.load_local(
             str(self.settings.vector_store_dir),
             self.embeddings,
@@ -45,7 +48,9 @@ class LocalIndexStore(IndexStore):
 
     def save(self, vector_store: FAISS) -> None:
         self.settings.vector_store_dir.mkdir(parents=True, exist_ok=True)
+        logger.info("Saving FAISS index to local path: %s", self.settings.vector_store_dir)
         vector_store.save_local(str(self.settings.vector_store_dir))
+        logger.info("Saved local FAISS index files: %s", ", ".join(INDEX_FILENAMES))
 
 
 class GCSIndexStore(IndexStore):
@@ -61,6 +66,11 @@ class GCSIndexStore(IndexStore):
         return all(self.bucket.blob(self._object_name(filename)).exists() for filename in INDEX_FILENAMES)
 
     def load(self) -> FAISS:
+        logger.info(
+            "Loading FAISS index from GCS: gs://%s/%s",
+            self.settings.gcs_bucket_name,
+            self.prefix or "",
+        )
         with tempfile.TemporaryDirectory() as temp_dir:
             target_dir = Path(temp_dir)
             for filename in INDEX_FILENAMES:
@@ -73,12 +83,18 @@ class GCSIndexStore(IndexStore):
             )
 
     def save(self, vector_store: FAISS) -> None:
+        logger.info(
+            "Saving FAISS index to GCS: gs://%s/%s",
+            self.settings.gcs_bucket_name,
+            self.prefix or "",
+        )
         with tempfile.TemporaryDirectory() as temp_dir:
             target_dir = Path(temp_dir)
             vector_store.save_local(str(target_dir))
             for filename in INDEX_FILENAMES:
                 blob = self.bucket.blob(self._object_name(filename))
                 blob.upload_from_filename(str(target_dir / filename))
+                logger.info("Uploaded GCS object: gs://%s/%s", self.settings.gcs_bucket_name, self._object_name(filename))
 
     def _object_name(self, filename: str) -> str:
         if not self.prefix:
