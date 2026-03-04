@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
 from .config import get_settings
-from .models import ChatRequest, ChatResponse, IngestFolderResponse, IngestResponse
+from .models import ChatRequest, ChatResponse, IngestFolderResponse, IngestResponse, RebuildIndexResponse
 from .rag import ResumeRAGService
 
 settings = get_settings()
@@ -61,6 +61,18 @@ def ingest_resume_folder() -> IngestFolderResponse:
         folder_path=folder_path,
         files_indexed=file_count,
         chunks_indexed=chunk_count,
+    )
+
+
+@app.post("/api/v1/jobs/rebuild-index", response_model=RebuildIndexResponse)
+def rebuild_index() -> RebuildIndexResponse:
+    folder_path, file_count, chunk_count = rag_service.rebuild_index_from_upload_dir()
+    return RebuildIndexResponse(
+        message="Index rebuilt successfully.",
+        folder_path=folder_path,
+        files_indexed=file_count,
+        chunks_indexed=chunk_count,
+        index_store_backend=settings.index_store_backend,
     )
 
 

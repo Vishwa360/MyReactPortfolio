@@ -1,13 +1,15 @@
 # Carbon AI Resume RAG Service
 
-Standalone FastAPI service for Carbon AI Chat that ingests a resume into a local FAISS vector store and answers questions about it using LangChain-based RAG.
+Standalone FastAPI service for Carbon AI Chat that ingests resume documents into a FAISS vector store and answers questions about them using LangChain-based RAG.
 
 ## What it provides
 
 - `POST /api/v1/ingest` uploads and indexes a resume file.
+- `POST /api/v1/ingest-folder` indexes all supported files in the configured folder.
+- `POST /api/v1/jobs/rebuild-index` rebuilds the index from the configured folder and persists it using the selected backend.
 - `POST /api/v1/chat` answers questions from the indexed resume.
 - `GET /health` reports service and index readiness.
-- Local FAISS persistence under `storage/faiss/`.
+- Local or GCS-backed FAISS persistence.
 
 ## Supported resume formats
 
@@ -37,6 +39,18 @@ curl -X POST http://localhost:8000/api/v1/ingest \
 ```
 
 Option 2: set `RAG_RESUME_SOURCE_PATH` in `.env` and turn on `RAG_AUTO_INGEST_ON_BOOT=true`.
+
+To rebuild from every supported file in `RAG_UPLOAD_DIR`:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/ingest-folder
+```
+
+To use the job-style rebuild endpoint:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/jobs/rebuild-index
+```
 
 ## Ask questions
 
@@ -68,6 +82,25 @@ curl -X POST http://localhost:8000/api/v1/chat \
 
 Point `customSendMessage` at `POST /api/v1/chat` and map the returned `answer` field into a Carbon text response.
 
+## Storage backends
+
+For local development:
+
+```env
+RAG_INDEX_STORE_BACKEND=local
+RAG_VECTOR_STORE_DIR=./storage/faiss
+```
+
+For Cloud Run or other serverless deployments:
+
+```env
+RAG_INDEX_STORE_BACKEND=gcs
+RAG_GCS_BUCKET=your-bucket-name
+RAG_GCS_INDEX_PREFIX=faiss
+```
+
+When `RAG_INDEX_STORE_BACKEND=gcs`, the service downloads `index.faiss` and `index.pkl` from the configured bucket prefix at runtime and uploads rebuilt artifacts back to the same location.
+
 ## Cloud Run
 
 Build and deploy from the service directory:
@@ -81,6 +114,14 @@ gcloud run deploy carbon-rag-service \
 
 Set the required environment variables in Cloud Run, especially `OPENAI_API_KEY`.
 
+If you deploy the RAG API as a Cloud Run service, configure it with:
+
+- `RAG_INDEX_STORE_BACKEND=gcs`
+- `RAG_GCS_BUCKET=<bucket>`
+- `RAG_GCS_INDEX_PREFIX=<prefix>`
+
+You can use a Cloud Run Job or an authenticated HTTP caller to invoke `POST /api/v1/jobs/rebuild-index` whenever you need to create or replace embeddings in GCS.
+
 ## Important persistence note
 
-This service persists FAISS locally inside the container filesystem. That works for local development and for the lifetime of a Cloud Run instance, but it is not durable storage across instance restarts or new revisions. For production durability, move the resume file and FAISS artifacts to a mounted volume or object storage workflow.
+This service supports local FAISS persistence for laptop testing and GCS-backed FAISS artifacts for serverless deployment. Local container storage is still ephemeral on Cloud Run, so use the GCS backend there.

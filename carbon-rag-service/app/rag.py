@@ -16,10 +16,9 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from .config import Settings
+from .index_store import build_index_store
+from .ingestion import SUPPORTED_EXTENSIONS, list_supported_files, split_documents
 from .models import ChatHistoryItem, ChatResponse
-
-
-SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".txt", ".md"}
 
 
 class ResumeRAGService:
@@ -39,6 +38,7 @@ class ResumeRAGService:
             chunk_size=settings.chunk_size,
             chunk_overlap=settings.chunk_overlap,
         )
+        self.index_store = build_index_store(settings, self.embeddings)
         self.vector_store: FAISS | None = None
         self.prompt = ChatPromptTemplate.from_messages(
             [
@@ -55,16 +55,12 @@ class ResumeRAGService:
         )
 
     def has_index(self) -> bool:
-        return (self.settings.vector_store_dir / "index.faiss").exists()
+        return self.index_store.has_index()
 
     def load_existing_index(self) -> bool:
         if not self.has_index():
             return False
-        self.vector_store = FAISS.load_local(
-            str(self.settings.vector_store_dir),
-            self.embeddings,
-            allow_dangerous_deserialization=True,
-        )
+        self.vector_store = self.index_store.load()
         return True
 
     async def ingest_upload(self, upload: UploadFile) -> tuple[str, int]:
@@ -80,19 +76,7 @@ class ResumeRAGService:
 
     def ingest_directory(self, directory_path: str | Path) -> tuple[str, int, int]:
         directory = Path(directory_path)
-        if not directory.exists():
-            raise HTTPException(status_code=404, detail=f"Directory not found: {directory}")
-        if not directory.is_dir():
-            raise HTTPException(status_code=400, detail=f"Path is not a directory: {directory}")
-
-        source_files = sorted(
-            path for path in directory.iterdir() if path.is_file() and path.suffix.lower() in SUPPORTED_EXTENSIONS
-        )
-        if not source_files:
-            raise HTTPException(
-                status_code=400,
-                detail=f"No supported files found in directory: {directory}",
-            )
+        source_files = list_supported_files(directory)
 
         all_chunks: list[Document] = []
         for source_file in source_files:
@@ -101,11 +85,7 @@ class ResumeRAGService:
             if not documents:
                 continue
 
-            chunks = self.splitter.split_documents(documents)
-            for index, chunk in enumerate(chunks):
-                chunk.metadata["chunk"] = index
-                chunk.metadata["source"] = source_file.name
-            all_chunks.extend(chunks)
+            all_chunks.extend(split_documents(documents, source_file.name, self.splitter))
 
         if not all_chunks:
             raise HTTPException(
@@ -114,7 +94,7 @@ class ResumeRAGService:
             )
 
         self.vector_store = FAISS.from_documents(all_chunks, self.embeddings)
-        self.vector_store.save_local(str(self.settings.vector_store_dir))
+        self.index_store.save(self.vector_store)
         return str(directory), len(source_files), len(all_chunks)
 
     def ingest_file(self, source_path: str | Path) -> int:
@@ -129,14 +109,15 @@ class ResumeRAGService:
         if not documents:
             raise HTTPException(status_code=400, detail="No content could be extracted from the resume.")
 
-        chunks = self.splitter.split_documents(documents)
-        for index, chunk in enumerate(chunks):
-            chunk.metadata["chunk"] = index
-            chunk.metadata["source"] = source.name
+        chunks = split_documents(documents, source.name, self.splitter)
 
         self.vector_store = FAISS.from_documents(chunks, self.embeddings)
-        self.vector_store.save_local(str(self.settings.vector_store_dir))
+        self.index_store.save(self.vector_store)
         return len(chunks)
+
+    def rebuild_index_from_upload_dir(self) -> tuple[str, int, int]:
+        self.vector_store = None
+        return self.ingest_directory(self.settings.upload_dir)
 
     def answer_question(self, question: str, chat_history: list[ChatHistoryItem]) -> ChatResponse:
         vector_store = self._require_vector_store()

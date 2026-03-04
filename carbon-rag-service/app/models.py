@@ -26,3 +26,11 @@ class IngestFolderResponse(BaseModel):
     folder_path: str
     files_indexed: int
     chunks_indexed: int
+
+
+class RebuildIndexResponse(BaseModel):
+    message: str
+    folder_path: str
+    files_indexed: int
+    chunks_indexed: int
+    index_store_backend: str
