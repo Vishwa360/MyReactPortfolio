@@ -7,6 +7,7 @@ export const profile = {
   phone: "+91-8050997792",
   linkedin: "https://www.linkedin.com/in/vishwajith-cr/",
   github: "https://github.com/Vishwa360",
+  medium: "https://medium.com/@vishwa.jith360",
   heroTitle: "Building production GenAI, RAG, and AI governance systems for enterprise teams.",
   summary:
     "Senior AI Engineer with 11+ years across network engineering, data science, and applied AI. Experienced in shipping production-grade GenAI assistants, multimodal RAG systems, forecasting models, and operational ML solutions across telecom, finance, FMCG, and banking domains.",
@@ -37,10 +38,10 @@ export const profile = {
     },
   ],
   capabilities: [
+    "Telecom Experience",
     "Multimodal RAG",
     "Agentic AI",
     "Text2SQL",
-    "Text2MDX",
     "Time Series Forecasting",
     "Anomaly Detection",
     "AI Governance",
@@ -49,6 +50,7 @@ export const profile = {
     "Docker",
     "OpenShift",
     "LangGraph",
+    "Text2MDX",
   ],
   education: [
     {
@@ -75,6 +77,7 @@ export const profile = {
   links: [
     { label: "LinkedIn", href: "https://www.linkedin.com/in/vishwajith-cr/" },
     { label: "GitHub", href: "https://github.com/Vishwa360" },
+    { label: "Medium", href: "https://medium.com/@vishwa.jith360" },
     { label: "Email", href: "mailto:vishwa.jith360@gmail.com" },
   ],
 };

@@ -2,21 +2,8 @@
 
 import React from "react";
 import { NavLink } from "react-router-dom";
-import {
-  Button,
-  Column,
-  Grid,
-  Heading,
-  Link,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Tag,
-  Tile,
-} from "@carbon/react";
-import { ArrowRight, LogoGithub, LogoLinkedin } from "@carbon/icons-react";
+import { Button, Column, Grid, Heading, Link, Tab, TabList, TabPanel, TabPanels, Tabs, Tag, Tile } from "@carbon/react";
+import { ArrowRight, ArrowUpRight, LogoGithub, LogoLinkedin } from "@carbon/icons-react";
 import "./index.scss";
 import SectionIntro from "../../components/shared/SectionIntro";
 import { profile } from "../../content/profile";
@@ -26,21 +13,38 @@ export default function Homepage() {
     <div className="homepage">
       <Grid fullWidth className="homepage__hero-grid">
         <Column sm={4} md={8} lg={8} className="homepage__hero-copy">
-          <SectionIntro
-            eyebrow={profile.title}
-            title={profile.heroTitle}
-            body={profile.summary}
-          />
+          <SectionIntro eyebrow={profile.title} title={profile.heroTitle} body={profile.summary} />
 
           <div className="homepage__hero-actions">
             <Button as={NavLink} to="/work-experience" renderIcon={ArrowRight}>
               Explore Experience
             </Button>
-            <Button kind="tertiary" href={profile.linkedin} target="_blank" rel="noopener noreferrer" renderIcon={LogoLinkedin}>
+            <Button
+              kind="tertiary"
+              href={profile.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              renderIcon={LogoLinkedin}
+            >
               LinkedIn
             </Button>
-            <Button kind="ghost" href={profile.github} target="_blank" rel="noopener noreferrer" renderIcon={LogoGithub}>
+            <Button
+              kind="tertiary"
+              href={profile.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              renderIcon={LogoGithub}
+            >
               GitHub
+            </Button>
+            <Button
+              kind="tertiary"
+              href={profile.medium}
+              target="_blank"
+              rel="noopener noreferrer"
+              renderIcon={ArrowUpRight}
+            >
+              Medium
             </Button>
           </div>
 
@@ -89,8 +93,8 @@ export default function Homepage() {
         <Column sm={4} md={8} lg={5}>
           <SectionIntro
             eyebrow="Focus Areas"
-            title="Carbon-structured, product-minded engineering."
-            body="The portfolio now emphasizes the work you actually want to be hired for: practical GenAI systems, measurable delivery, and enterprise-grade implementation discipline."
+            title="AI / ML Engineering"
+            body="Developing, Deploying, Monitoring and Maintaining High Business Impact practical GenAI / ML systems, measurable delivery, and enterprise-grade implementation discipline."
           />
         </Column>
         <Column sm={4} md={8} lg={11}>
@@ -117,8 +121,8 @@ export default function Homepage() {
               <TabPanel>
                 <Tile className="homepage__panel">
                   <div className="homepage__skills">
-                    {profile.capabilities.map((skill) => (
-                      <Tag key={skill} type="cool-gray">
+                    {profile.capabilities.map((skill, index) => (
+                      <Tag key={skill} type={index % 2 === 0 ? "cyan" : "teal"}>
                         {skill}
                       </Tag>
                     ))}
@@ -149,24 +153,26 @@ export default function Homepage() {
                 <Tile className="homepage__panel">
                   <div className="homepage__contact-list">
                     <p>
-                      Email:{" "}
+                      <strong>Email:</strong>{" "}
                       <Link href={`mailto:${profile.email}`} inline>
                         {profile.email}
                       </Link>
                     </p>
                     <p>
-                      LinkedIn:{" "}
+                      <strong>LinkedIn:</strong>{" "}
                       <Link href={profile.linkedin} target="_blank" rel="noopener noreferrer" inline>
                         linkedin.com/in/vishwajith-cr
                       </Link>
                     </p>
                     <p>
-                      GitHub:{" "}
+                      <strong>GitHub:</strong>{" "}
                       <Link href={profile.github} target="_blank" rel="noopener noreferrer" inline>
                         github.com/Vishwa360
                       </Link>
                     </p>
-                    <p>Languages: {profile.languages.join(", ")}</p>
+                    <p>
+                      <strong>Languages:</strong> {profile.languages.join(", ")}
+                    </p>
                   </div>
                 </Tile>
               </TabPanel>
